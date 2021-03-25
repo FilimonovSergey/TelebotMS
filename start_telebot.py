@@ -1,7 +1,6 @@
 import telebot
-from settings import TG_TOKEN
 
-bot = telebot.TeleBot(TG_TOKEN)
+bot = telebot.TeleBot("1704279792:AAHEN-zVs0yEAA2ImGc7PLTOQA7A7yIfCEI")
 
 
 @bot.message_handler(commands=['start', 'help'])
