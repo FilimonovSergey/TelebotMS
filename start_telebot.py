@@ -1,6 +1,7 @@
-﻿import telebot
+import telebot
+from settings import TG_TOKEN
 
-bot = telebot.TeleBot('1704279792:AAHEN-zVs0yEAA2ImGc7PLTOQA7A7yIfCEI')
+bot = telebot.TeleBot(TG_TOKEN)
 
 
 @bot.message_handler(commands=['start', 'help'])
@@ -11,7 +12,7 @@ def send_welcome(message):
 @bot.message_handler(content_types=['text'])
 def get_text_messages(message):
     if message.text.lower() == 'привет':
-        bot.send_message(message.from_user.id, 'Привет!')
+        bot.send_message(message.from_user.id, 'Привет!!!')
     else:
         bot.send_message(message.from_user.id, 'Не понимаю, что это значит.')
 
