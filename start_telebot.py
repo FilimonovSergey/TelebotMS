@@ -41,6 +41,7 @@ def all_routes(message):
     table_all_routes = cur.fetchall()
     bot.send_message(message.from_user.id, table_all_routes)
 
+
 def check_routes():
     None
 
