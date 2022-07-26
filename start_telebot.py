@@ -1,5 +1,6 @@
 import telebot
 import os
+import sqlite3
 
 token = os.getenv("TOKEN")
 bot = telebot.TeleBot(token)
@@ -9,38 +10,51 @@ bot = telebot.TeleBot(token)
 def handle_start(message):
     user_markup = telebot.types.ReplyKeyboardMarkup(True, False)
     user_markup.row('/start')
-    user_markup.row('Ассортимент')
-    user_markup.row('Акции')
-    user_markup.row('Отзывы и предложения')
-    user_markup.row('Доставка и оплата')
-    bot.send_message(message.from_user.id, 'Добро пожаловать! Я бот компании, приятно познакомиться!',
+    user_markup.row('Все маршруты')
+    user_markup.row('Пройденные маршруты')
+    user_markup.row('Не пройденные маршруты')
+    user_markup.row('Добавить маршрут')
+    bot.send_message(message.from_user.id, 'Вечер в хату! Чем помочь, бродяга?',
                      reply_markup=user_markup)
 
 
 @bot.message_handler(content_types=['text'])
 def get_text_messages(message):
     if message.text.lower() == 'привет':
-        bot.send_message(message.from_user.id, 'Привет!!!')
-    elif message.text == 'Ассортимент':
-        bot.send_message(message.from_user.id,
-                         'Вы можете ознакомиться с нашим ассортиментом, перейдя по следующей ссылке:'
-                         'https://melodiasna.ru/')
-    elif message.text == 'Акции':
-        bot.send_message(message.from_user.id,
-                         'Вы можете ознакомиться с действующими акциями, перейдя по следующей ссылке:'
-                         'https://melodiasna.ru/actions/')
-    elif message.text == 'Отзывы и предложения':
-        bot.send_message(message.from_user.id,
-                         'Для того, чтобы ознакомиться с отзывами о продуктах нашей компании, '
-                         'а также оставить свой  отзыв или предложение, перейдите по следующей ссылке:'
-                         'https://melodiasna.ru/o-produkte/reviews/')
-    elif message.text == 'Доставка и оплата':
-        bot.send_message(message.from_user.id,
-                         'Для того, чтобы ознакомиться с информацией о доставке и оплате товаров,'
-                         'перейдите по следующей ссылке:'
-                         'https://melodiasna.ru/dostavka-i-oplata/')
+        bot.send_message(message.from_user.id, 'Здарова! Как жизнь?')
+    elif message.text == 'Все маршруты':
+        all_routes(message)
+    elif message.text == 'Пройденные маршруты':
+        check_routes()
+    elif message.text == 'Не пройденные маршруты':
+        no_check_routes()
+    elif message.text == 'Добавить маршрут':
+        add_route(message)
     else:
-        bot.send_message(message.from_user.id, 'Будем рады видеть Вас в наших фирменных магазинах')
+        bot.send_message(message.from_user.id, 'Заходи ещё!')
+
+
+def all_routes(message):
+    conn = sqlite3.connect('routes.db')
+    cur = conn.cursor()
+    cur.execute("SELECT * from routes")
+    table_all_routes = cur.fetchall()
+    bot.send_message(message.from_user.id, table_all_routes)
+
+def check_routes():
+    None
+
+
+def no_check_routes():
+    None
+
+
+def add_route(message):
+    conn = sqlite3.connect('routes.db')
+    cur = conn.cursor()
+    cur.execute("INSERT INTO routes VALUES(?, ?, ?, ?);")
+    conn.commit()
+    bot.send_message(message.from_user.id, 'Твой маршрут добавлен')
 
 
 bot.polling(none_stop=True)
